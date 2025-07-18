@@ -2,7 +2,7 @@ import json
 import os
 import sys
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, cast
 
 import requests
 
@@ -14,7 +14,8 @@ def fetch_weather_data(lat: float, lon: float, api_key: str) -> dict[str, Any]:
     url = f"{BASE_URL}/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     response = requests.get(url, timeout=10)
     response.raise_for_status()
-    return response.json()
+    data = cast(Dict[str, Any], response.json())
+    return data
 
 
 def transform_data(raw_data: dict[str, Any]) -> dict[str, Any]:
