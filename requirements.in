@@ -1,3 +1,4 @@
+# requirements.in
 requests
 pandas
 pydantic
@@ -6,3 +7,4 @@ pytest
 ruff
 pre-commit
 mypy
+types-requests     
