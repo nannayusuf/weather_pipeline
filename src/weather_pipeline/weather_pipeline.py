@@ -22,13 +22,13 @@ def transform_data(raw_data: dict[str, Any]) -> dict[str, Any]:
     main_data = raw_data.get("main", {})
     weather_info = raw_data.get("weather", [{}])[0]
     return {
-       "city": raw_data.get("name"),
-       "country": raw_data.get("sys", {}).get("country"),
-       "temperature": main_data.get("temp"),
-       "humidity": main_data.get("humidity"),
-       "description": weather_info.get("description"),
-       "timestamp": datetime.now(timezone.utc).isoformat(),
-   }
+        "city": raw_data.get("name"),
+        "country": raw_data.get("sys", {}).get("country"),
+        "temperature": main_data.get("temp"),
+        "humidity": main_data.get("humidity"),
+        "description": weather_info.get("description"),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 def save_data(data: dict[str, Any], file_path: str) -> None:
