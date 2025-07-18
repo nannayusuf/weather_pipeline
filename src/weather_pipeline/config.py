@@ -16,5 +16,4 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    settings = Settings()  # type: ignore[arg-type]
-    return settings
+    return Settings()  # type: ignore[call-arg]
