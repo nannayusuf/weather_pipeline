@@ -1,8 +1,6 @@
 from functools import lru_cache
-
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -11,9 +9,8 @@ class Settings(BaseSettings):
         extra="allow",
     )
 
-    weather_api_key: str = Field("dummy_value", alias="WEATHER_API_KEY")
-
+    weather_api_key: str = Field(..., validation_alias="WEATHER_API_KEY")
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()  # type: ignore[call-arg]
+    return Settings()
