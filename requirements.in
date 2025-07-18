@@ -8,3 +8,4 @@ ruff
 pre-commit
 mypy
 types-requests     
+pytest-cov
