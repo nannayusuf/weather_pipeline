@@ -1,0 +1,13 @@
+requests>=2.31
+pandas>=2.1
+pydantic-settings>=2.0
+python-dotenv>=1.0
+structlog>=23.1
+
+[dev]
+pytest>=7.4
+pytest-cov>=4.1
+ruff>=0.4
+mypy>=1.8
+pre-commit>=3.5
+bandit[toml]>=1.7

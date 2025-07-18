@@ -1,0 +1,10 @@
+# requirements.in
+requests
+pandas
+pydantic
+python-dotenv
+pytest
+ruff
+pre-commit
+mypy
+types-requests     
