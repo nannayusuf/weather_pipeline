@@ -1,58 +1,51 @@
-from __future__ import annotations
-
-import json
-import os
-import sys
-from datetime import datetime
-from typing import Any
-
 import requests
+import os
+from datetime import datetime
+import json
+from typing import Dict, Any
 
-API_KEY: str = os.getenv("WEATHER_API_KEY", "")
+API_KEY = os.getenv("WEATHER_API_KEY", "")
 BASE_URL = "https://api.openweathermap.org/data/2.5"
 
 
-def obter_dados(lat: float, lon: float, api_key: str) -> dict[str, Any]:
+def fetch_weather_data(lat: float, lon: float, api_key: str) -> Dict[str, Any]:
     url = f"{BASE_URL}/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     return response.json()
 
 
-def transformar_dados(raw: dict[str, Any]) -> dict[str, Any]:
-    main = raw.get("main", {})
-    sys_info = raw.get("sys", {})
-    weather_list = raw.get("weather", [{}])
-    weather = weather_list[0] if weather_list else {}
-
+def transform_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+    main_data = raw_data.get("main", {})
+    weather_info = raw_data.get("weather", [{}])[0]
     return {
-        "cidade": str(raw.get("name")),
-        "pais": str(sys_info.get("country")),
-        "temperatura": float(main.get("temp", 0.0)),
-        "umidade": int(main.get("humidity", 0)),
-        "descricao": str(weather.get("description", "")),
-        "timestamp": datetime.utcnow().isoformat(),
-    }
+       "city": raw_data.get("name"),
+       "country": raw_data.get("sys", {}).get("country"),
+       "temperature": main_data.get("temp"),
+       "humidity": main_data.get("humidity"),
+       "description": weather_info.get("description"),
+       "timestamp": datetime.utcnow().isoformat(),
+   }
 
 
-def salvar_dados(data: dict[str, Any], caminho: str) -> None:
-    with open(caminho, "a", encoding="utf-8") as file:
+def save_data(data: Dict[str, Any], file_path: str) -> None:
+    with open(file_path, "a", encoding="utf-8") as file:
         file.write(json.dumps(data, ensure_ascii=False) + "\n")
 
 
-def run_pipeline(lat: float, lon: float, saida: str) -> None:
-    raw = obter_dados(lat, lon, API_KEY)
-    transformed = transformar_dados(raw)
-    salvar_dados(transformed, saida)
+def run_pipeline(lat: float, lon: float, output_file: str) -> None:
+    raw_data = fetch_weather_data(lat, lon, API_KEY)
+    transformed_data = transform_data(raw_data)
+    save_data(transformed_data, output)
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Uso: python weather_pipeline.py <lat> <lon> <arquivo_saida>")
+        print("Usage: python weather_pipeline.py <lat> <lon> <output_file>")
         sys.exit(1)
 
     lat = float(sys.argv[1])
     lon = float(sys.argv[2])
-    arquivo = sys.argv[3]
+    output_file = sys.argv[3]
 
-    run_pipeline(lat, lon, arquivo)
+    run_pipeline(lat, lon, output_file)
