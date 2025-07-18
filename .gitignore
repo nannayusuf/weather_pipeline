@@ -8,3 +8,6 @@ logs/
 .env.*.local
 *.db
 *.sqlite
+*.log
+venv/
+*.log
