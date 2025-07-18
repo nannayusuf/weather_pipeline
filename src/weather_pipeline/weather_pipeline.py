@@ -1,21 +1,23 @@
-import requests
-import os
-from datetime import datetime
 import json
-from typing import Dict, Any
+import os
+import sys
+from datetime import datetime
+from typing import Any
+
+import requests
 
 API_KEY = os.getenv("WEATHER_API_KEY", "")
 BASE_URL = "https://api.openweathermap.org/data/2.5"
 
 
-def fetch_weather_data(lat: float, lon: float, api_key: str) -> Dict[str, Any]:
+def fetch_weather_data(lat: float, lon: float, api_key: str) -> dict[str, Any]:
     url = f"{BASE_URL}/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     return response.json()
 
 
-def transform_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+def transform_data(raw_data: dict[str, Any]) -> dict[str, Any]:
     main_data = raw_data.get("main", {})
     weather_info = raw_data.get("weather", [{}])[0]
     return {
@@ -24,11 +26,11 @@ def transform_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
        "temperature": main_data.get("temp"),
        "humidity": main_data.get("humidity"),
        "description": weather_info.get("description"),
-       "timestamp": datetime.utcnow().isoformat(),
+       "timestamp": datetime.now(datetime.timezone.utc).isoformat(),
    }
 
 
-def save_data(data: Dict[str, Any], file_path: str) -> None:
+def save_data(data: dict[str, Any], file_path: str) -> None:
     with open(file_path, "a", encoding="utf-8") as file:
         file.write(json.dumps(data, ensure_ascii=False) + "\n")
 
@@ -36,7 +38,7 @@ def save_data(data: Dict[str, Any], file_path: str) -> None:
 def run_pipeline(lat: float, lon: float, output_file: str) -> None:
     raw_data = fetch_weather_data(lat, lon, API_KEY)
     transformed_data = transform_data(raw_data)
-    save_data(transformed_data, output)
+    save_data(transformed_data, output_file)
 
 
 if __name__ == "__main__":
