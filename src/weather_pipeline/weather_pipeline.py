@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, cast
 
 import requests
@@ -27,7 +27,7 @@ def transform_data(raw_data: dict[str, Any]) -> dict[str, Any]:
        "temperature": main_data.get("temp"),
        "humidity": main_data.get("humidity"),
        "description": weather_info.get("description"),
-       "timestamp": datetime.now(datetime.timezone.utc).isoformat(),
+       "timestamp": datetime.now(timezone.utc).isoformat(),
    }
 
 

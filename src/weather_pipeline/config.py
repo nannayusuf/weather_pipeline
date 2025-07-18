@@ -11,7 +11,7 @@ class Settings(BaseSettings):
         extra="allow",
     )
 
-    weather_api_key: str = Field(..., alias="WEATHER_API_KEY")
+    weather_api_key: str = Field("dummy_value", alias="WEATHER_API_KEY")
 
 
 @lru_cache
